@@ -1,0 +1,126 @@
+ <?php
+		session_start();
+		if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] != true) {
+			//echo "Welcome to the member's area, " . $_SESSION['username'] . "!";
+			header ("location: index.php");
+		} 
+?> 
+	
+	<html>
+<head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="./CSS/main.css">
+</head>	
+	<body>
+	<!--<div class="jumbotron">-->
+      <div class="container">
+        <h1>Aktuális feladatok, közelgő határidők</h1>
+        <div class="container">
+		
+	
+	<div class="row">
+		
+        <!--<h3>itt meg kell beszélnünk, hogy mi legyen a listában</h3>-->
+        <div class="col-lg-12">
+        
+		<form action="" method="POST">
+        <div class="table-responsive" >
+
+                
+              <table id="mytable" class="table table-bordred table-striped">
+                   <tbody>
+				   
+				   <tr><th width="25"></th><th>VBT elnevezése</th><th>Üzemeltető megnevezése</th><th>Vízellátó rendszer megnevezése</th><th>Létrehozva</th><th>Utolsó módosítás</th><th>Szerkesztés</th></tr>
+				   
+				   
+                  <?php
+				  include("config.php");
+				  
+					
+					
+					//$con=mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+                   $sql_text= 'SELECT * FROM vbt WHERE `letrehozva` < DATE_ADD(NOW(), INTERVAL -2 MONTH) ORDER BY modositva DESC';
+                   if (mysqli_connect_errno()) {
+						printf("Connect failed: %s\n", mysqli_connect_error());
+						exit();
+					}
+					$chset=mysqli_query($db,"SET CHARACTER SET 'utf8'");
+					$chset2=mysqli_query($db,"SET SESSION collation_connection ='utf8_general_ci'");
+				   $result=mysqli_query($db, $sql_text);
+				
+				 
+				  
+
+				  
+				    $json = array();
+				  while($row = mysqli_fetch_array($result)) { 
+					
+					  $json[] = $row;
+					 
+					  
+					 	
+				  }
+				 /* var_dump($json);*/
+				  
+				  
+				 /* echo json_encode($json);*/
+				  /* free result set */
+				mysqli_free_result($result);
+				mysqli_close($db);
+				
+				
+				foreach($json as $id => $item) {
+						$date1=strtotime($item["letrehozva"]);
+						$datum1=date('Y-m-d',$date1);
+						$date2=strtotime($item["modositva"]);
+						$datum2=date('Y-m-d',$date2);
+						echo '<tr id="'.$item["ID"].'"><td width="25"><input type="checkbox" id="checkall"></td><td>'.$item["vbt_elnevezes"].'</td><td>'.$item["vizmu_neve"].'</td><td>'.$item["vizellato_megnevezes"].'</td><td>'.$datum1.'</td><td>'.$datum2.'</td><td><button type="button" id="id" class="btn btn-warning btn-xs update">Betölt!</button></td></tr>';
+					}
+			
+		  
+		 
+  ?>
+	
+        </tbody>
+	</table>
+
+		
+						
+		</div>
+		</form>			
+		</div>
+	</div>
+	</div>
+        
+      </div>
+    <!--</div>-->
+	
+	
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Jogszabályi háttér</h2>
+          <p>A ivóvíz minőségi követelményeiről és az ellenőrzés rendjéről szóló 201/2001. (X. 25.) Korm. rendelet (továbbiakban Kr.) írja elő az ivóvízellátó rendszerek üzemeltetéséhez szükséges ivóvíz biztonsági terv elkészítését. <br> A Kr. az ivóvíz biztonsági terv elkészítésével, alkalmazáésával, valamint hatósági alkalmazásával kapcsolatban a következőket tartalmazza:  .... </p>
+          <p><a class="btn btn-default" href="./DOC/vbt_jog_aktualis.pdf" role="button">Részletek &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Kockázatbecslés módszertan</h2>
+          <p>Az Ivóvízbiztonsági Tervben a vízellátó rendszer egyes elemeit az ivóvíz szolgáltatás biztonsága, valamint a a szolgáltatott ivóvíz minőségére gyakorolt hatása alapján kell értékelni. A szükséges beavatkozások vonatkozásában ezek alapján fel lehet állítani majd a prioritásokat, illetve fejlesztési irányokat. A szolgáltatott ivóvíz minőségére ..... </p>
+          <p><a class="btn btn-default" href="./DOC/Kockazatbecsles_modszertan_vibir.pdf" role="button">Részletek &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Gyakran feltett kérdések</h2>
+          <p>A Vízbiztonsági Információs rendszer működésével,  használatával kapcsolatos kérdéseket itt gyűjtöttük össze az Önök számára. A kérdésekre adott váélaszok között sok hasznos információt talál. AMennyiben mégsem találja a kérdéseére a választ, keressen bizalommal az info [kukac] vibir pont hu emailcímen minket.</p>
+          <p><a class="btn btn-default" href="faq.html" role="button">Gyakori kérdések &raquo;</a></p>
+        </div>
+      </div>
+
+      <hr>
+      
+    </div> <!-- /container --> 
+	</body>
+	</html>
