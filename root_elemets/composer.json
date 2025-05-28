@@ -1,0 +1,7 @@
+{
+    "require": {
+        "setasign/tfpdf": "1.25",
+        "tecnickcom/tcpdf": "^6.3",
+      "ext-mysqli": "*"
+    }
+}
